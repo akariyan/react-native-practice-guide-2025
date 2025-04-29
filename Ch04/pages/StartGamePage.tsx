@@ -1,8 +1,13 @@
 import { View, TextInput, StyleSheet, Alert } from "react-native";
 import ConfirmButton from "../components/ConfirmButton";
 import { useState } from "react";
+import { PageNumber } from "../App";
 
-const StartGamePage = () => {
+const StartGamePage = ({
+  setCurrentPage,
+}: {
+  setCurrentPage: (page: PageNumber) => void;
+}) => {
   const MAX_NUMBER = 99;
   const MIN_NUMBER = 1;
 
@@ -14,7 +19,11 @@ const StartGamePage = () => {
 
   const confirmInputHandler = () => {
     const chosenNumber = parseInt(enteredNumber);
-    if (chosenNumber < MIN_NUMBER || chosenNumber > MAX_NUMBER) {
+    if (
+      isNaN(chosenNumber) ||
+      chosenNumber < MIN_NUMBER ||
+      chosenNumber > MAX_NUMBER
+    ) {
       Alert.alert("Invalid number!", "Number must be between 1 and 99.", [
         {
           text: "OK",
@@ -24,7 +33,7 @@ const StartGamePage = () => {
       ]);
       return;
     }
-    console.log("is Valid!");
+    setCurrentPage(PageNumber.PlayGame);
   };
 
   const resetInputHandler = () => {
