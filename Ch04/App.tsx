@@ -2,6 +2,9 @@ import { ImageBackground, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
+import { useFonts } from "expo-font";
+import AppLoading from "expo-app-loading";
+
 import StartGamePage from "./pages/StartGamePage";
 import PlayGamePage from "./pages/PlayGamePage";
 import ResultGamePage from "./pages/ResultGamePage";
@@ -18,13 +21,32 @@ const App = () => {
     PageNumber.StartGame
   );
   const [correctNumber, setCorrectNumber] = useState<number>(0);
+  const [tryCount, setTryCount] = useState<number>(0);
 
-  const gameProgressHandler = (page: PageNumber, correctNumber: number) => {
-    setCurrentPage(() => page);
+  const [fontsLoaded] = useFonts({
+    "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
+    "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
+  });
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
+
+  const movePageToPlayFromStart = (correctNumber: number) => {
+    setCurrentPage(() => PageNumber.PlayGame);
     setCorrectNumber(() => correctNumber);
   };
 
-  const gameRestartHandler = () => {
+  const movePageToResultFromPlay = (
+    correctNumber: number,
+    tryCount: number
+  ) => {
+    setCurrentPage(() => PageNumber.ResultGame);
+    setCorrectNumber(() => correctNumber);
+    setTryCount(() => tryCount);
+  };
+
+  const movePageToStartFromResult = () => {
     setCurrentPage(() => PageNumber.StartGame);
     setCorrectNumber(() => 0);
   };
@@ -32,19 +54,20 @@ const App = () => {
   const renderPage = () => {
     switch (currentPage) {
       case PageNumber.StartGame:
-        return <StartGamePage gameProgressHandler={gameProgressHandler} />;
+        return <StartGamePage moveToNextPage={movePageToPlayFromStart} />;
       case PageNumber.PlayGame:
         return (
           <PlayGamePage
-            gameProgressHandler={gameProgressHandler}
+            moveToNextPage={movePageToResultFromPlay}
             correctNumber={correctNumber}
           />
         );
       case PageNumber.ResultGame:
         return (
           <ResultGamePage
-            gameRestartHandler={gameRestartHandler}
+            moveToNextPage={movePageToStartFromResult}
             correctNumber={correctNumber}
+            tryCount={tryCount}
           />
         );
     }
@@ -52,7 +75,7 @@ const App = () => {
 
   return (
     <LinearGradient
-      colors={[Colors.primary100, Colors.primary500]}
+      colors={[Colors.primary300, Colors.primary500]}
       style={styles.rootContainer}
     >
       <ImageBackground

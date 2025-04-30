@@ -14,17 +14,19 @@ const NumberContainer = ({ children }: { children: React.ReactNode }) => {
 const styles = StyleSheet.create({
   container: {
     borderWidth: 4,
-    borderColor: Colors.accent500,
-    padding: 24,
+    borderColor: Colors.primary500,
+    padding: 36,
     borderRadius: 8,
-    marginVertical: 8,
+    marginVertical: 24,
     alignItems: "center",
     justifyContent: "center",
+    width: "100%",
+    backgroundColor: Colors.primary300,
   },
   numberText: {
-    color: Colors.accent500,
+    color: Colors.secondary500,
     fontSize: 36,
-    fontWeight: "bold",
+    fontFamily: "open-sans-bold",
   },
 });
 

@@ -1,13 +1,15 @@
 import { View, TextInput, StyleSheet, Alert } from "react-native";
-import ConfirmButton from "../components/ui/ConfirmButton";
 import { useState } from "react";
-import { PageNumber } from "../App";
+
+import ConfirmButton from "../components/ui/ConfirmButton";
 import Colors from "../constants/color";
+import Title from "../components/ui/Title";
+import Card from "../components/ui/Card";
 
 const StartGamePage = ({
-  gameProgressHandler,
+  moveToNextPage,
 }: {
-  gameProgressHandler: (page: PageNumber, correctNumber: number) => void;
+  moveToNextPage: (correctNumber: number) => void;
 }) => {
   const MAX_NUMBER = 99;
   const MIN_NUMBER = 1;
@@ -38,7 +40,7 @@ const StartGamePage = ({
       ]);
       return;
     }
-    gameProgressHandler(PageNumber.PlayGame, chosenNumber);
+    moveToNextPage(chosenNumber);
   };
 
   const resetInputHandler = () => {
@@ -46,7 +48,8 @@ const StartGamePage = ({
   };
 
   return (
-    <View style={styles.inputContainer}>
+    <Card>
+      <Title>Enter a Number</Title>
       <TextInput
         style={styles.numberInput}
         maxLength={2}
@@ -64,30 +67,17 @@ const StartGamePage = ({
           <ConfirmButton onPress={confirmInputHandler}>START</ConfirmButton>
         </View>
       </View>
-    </View>
+    </Card>
   );
 };
 
 const styles = StyleSheet.create({
-  inputContainer: {
-    backgroundColor: Colors.primary300,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 36,
-    marginHorizontal: 16,
-    borderRadius: 8,
-    elevation: 4, // Android
-    shadowColor: Colors.black, // iOS
-    shadowOffset: { width: 0, height: 2 }, // iOS
-    shadowRadius: 6, // iOS
-    shadowOpacity: 0.25, // iOS
-  },
   numberInput: {
     width: 50,
     fontSize: 32,
-    borderBottomColor: Colors.secondary100,
+    borderBottomColor: Colors.secondary300,
     borderBottomWidth: 2,
-    color: Colors.secondary100,
+    color: Colors.secondary300,
     marginVertical: 8,
     paddingBottom: 4,
     fontWeight: "bold",
