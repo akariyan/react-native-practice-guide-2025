@@ -1,9 +1,11 @@
 import { ImageBackground, StyleSheet } from "react-native";
-import StartGamePage from "./pages/StartGamePage";
 import { LinearGradient } from "expo-linear-gradient";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
+import StartGamePage from "./pages/StartGamePage";
 import PlayGamePage from "./pages/PlayGamePage";
 import ResultGamePage from "./pages/ResultGamePage";
+import Colors from "./constants/color";
 
 export enum PageNumber {
   StartGame = 0,
@@ -15,34 +17,53 @@ const App = () => {
   const [currentPage, setCurrentPage] = useState<PageNumber>(
     PageNumber.StartGame
   );
+  const [correctNumber, setCorrectNumber] = useState<number>(0);
 
-  const setCurrentPageHandler = (page: PageNumber) => {
+  const gameProgressHandler = (page: PageNumber, correctNumber: number) => {
     setCurrentPage(() => page);
+    setCorrectNumber(() => correctNumber);
+  };
+
+  const gameRestartHandler = () => {
+    setCurrentPage(() => PageNumber.StartGame);
+    setCorrectNumber(() => 0);
   };
 
   const renderPage = () => {
     switch (currentPage) {
       case PageNumber.StartGame:
-        return <StartGamePage setCurrentPage={setCurrentPageHandler} />;
+        return <StartGamePage gameProgressHandler={gameProgressHandler} />;
       case PageNumber.PlayGame:
-        return <PlayGamePage setCurrentPage={setCurrentPageHandler} />;
+        return (
+          <PlayGamePage
+            gameProgressHandler={gameProgressHandler}
+            correctNumber={correctNumber}
+          />
+        );
       case PageNumber.ResultGame:
-        return <ResultGamePage setCurrentPage={setCurrentPageHandler} />;
+        return (
+          <ResultGamePage
+            gameRestartHandler={gameRestartHandler}
+            correctNumber={correctNumber}
+          />
+        );
     }
   };
 
   return (
     <LinearGradient
-      colors={["#b5c0f6", "#3fa3f5"]}
+      colors={[Colors.primary100, Colors.primary500]}
       style={styles.rootContainer}
     >
       <ImageBackground
         source={require("./assets/images/background.png")}
         resizeMode="cover"
-        style={styles.rootBackgroundImageContainer}
+        style={styles.rootScreen}
         imageStyle={styles.rootBackgroundImage}
       >
-        {renderPage()}
+        <SafeAreaProvider>
+          <SafeAreaView style={styles.rootScreen}>{renderPage()}</SafeAreaView>
+        </SafeAreaProvider>
       </ImageBackground>
     </LinearGradient>
   );
@@ -51,9 +72,9 @@ const App = () => {
 const styles = StyleSheet.create({
   rootContainer: {
     flex: 1,
-    backgroundColor: "#3fa3f5",
+    backgroundColor: Colors.primary500,
   },
-  rootBackgroundImageContainer: {
+  rootScreen: {
     flex: 1,
   },
   rootBackgroundImage: {

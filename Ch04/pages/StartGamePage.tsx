@@ -1,12 +1,13 @@
 import { View, TextInput, StyleSheet, Alert } from "react-native";
-import ConfirmButton from "../components/ConfirmButton";
+import ConfirmButton from "../components/ui/ConfirmButton";
 import { useState } from "react";
 import { PageNumber } from "../App";
+import Colors from "../constants/color";
 
 const StartGamePage = ({
-  setCurrentPage,
+  gameProgressHandler,
 }: {
-  setCurrentPage: (page: PageNumber) => void;
+  gameProgressHandler: (page: PageNumber, correctNumber: number) => void;
 }) => {
   const MAX_NUMBER = 99;
   const MIN_NUMBER = 1;
@@ -19,11 +20,15 @@ const StartGamePage = ({
 
   const confirmInputHandler = () => {
     const chosenNumber = parseInt(enteredNumber);
-    if (
-      isNaN(chosenNumber) ||
-      chosenNumber < MIN_NUMBER ||
-      chosenNumber > MAX_NUMBER
-    ) {
+
+    if (isNaN(chosenNumber)) {
+      Alert.alert("Not Number!", "Your correct is must be a number.", [
+        { text: "OK", style: "destructive", onPress: resetInputHandler },
+      ]);
+      return;
+    }
+
+    if (chosenNumber < MIN_NUMBER || chosenNumber > MAX_NUMBER) {
       Alert.alert("Invalid number!", "Number must be between 1 and 99.", [
         {
           text: "OK",
@@ -33,7 +38,7 @@ const StartGamePage = ({
       ]);
       return;
     }
-    setCurrentPage(PageNumber.PlayGame);
+    gameProgressHandler(PageNumber.PlayGame, chosenNumber);
   };
 
   const resetInputHandler = () => {
@@ -65,27 +70,26 @@ const StartGamePage = ({
 
 const styles = StyleSheet.create({
   inputContainer: {
-    backgroundColor: "#677ad6",
+    backgroundColor: Colors.primary300,
     alignItems: "center",
     justifyContent: "center",
-    padding: 16,
-    marginTop: 100,
+    padding: 36,
     marginHorizontal: 16,
     borderRadius: 8,
     elevation: 4, // Android
-    shadowColor: "#000", // iOS
+    shadowColor: Colors.black, // iOS
     shadowOffset: { width: 0, height: 2 }, // iOS
     shadowRadius: 6, // iOS
     shadowOpacity: 0.25, // iOS
   },
   numberInput: {
-    height: 100,
     width: 50,
     fontSize: 32,
-    borderBottomColor: "#ddbaba",
+    borderBottomColor: Colors.secondary100,
     borderBottomWidth: 2,
-    color: "#ddbaba",
+    color: Colors.secondary100,
     marginVertical: 8,
+    paddingBottom: 4,
     fontWeight: "bold",
     textAlign: "center",
   },

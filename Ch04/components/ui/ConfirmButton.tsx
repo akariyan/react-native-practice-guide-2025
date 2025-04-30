@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
+import Colors from "../../constants/color";
 
 const ConfirmButton = ({
   children,
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   buttonInnerContainer: {
-    backgroundColor: "#48e1a4b1",
+    backgroundColor: Colors.secondary500,
     paddingHorizontal: 16,
     paddingVertical: 4,
     elevation: 4,
