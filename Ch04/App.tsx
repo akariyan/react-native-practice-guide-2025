@@ -1,9 +1,10 @@
 import { ImageBackground, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useFonts } from "expo-font";
-import AppLoading from "expo-app-loading";
+import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
 
 import StartGamePage from "./pages/StartGamePage";
 import PlayGamePage from "./pages/PlayGamePage";
@@ -16,6 +17,8 @@ export enum PageNumber {
   ResultGame = 2,
 }
 
+SplashScreen.preventAutoHideAsync();
+
 const App = () => {
   const [currentPage, setCurrentPage] = useState<PageNumber>(
     PageNumber.StartGame
@@ -23,14 +26,10 @@ const App = () => {
   const [correctNumber, setCorrectNumber] = useState<number>(0);
   const [tryCount, setTryCount] = useState<number>(0);
 
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, fontsError] = useFonts({
     "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
     "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
   });
-
-  if (!fontsLoaded) {
-    return <AppLoading />;
-  }
 
   const movePageToPlayFromStart = (correctNumber: number) => {
     setCurrentPage(() => PageNumber.PlayGame);
@@ -50,6 +49,16 @@ const App = () => {
     setCurrentPage(() => PageNumber.StartGame);
     setCorrectNumber(() => 0);
   };
+
+  useEffect(() => {
+    if (fontsLoaded || fontsError) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontsError]);
+
+  if (!fontsLoaded && !fontsError) {
+    return null;
+  }
 
   const renderPage = () => {
     switch (currentPage) {
@@ -74,21 +83,26 @@ const App = () => {
   };
 
   return (
-    <LinearGradient
-      colors={[Colors.primary300, Colors.primary500]}
-      style={styles.rootContainer}
-    >
-      <ImageBackground
-        source={require("./assets/images/background.png")}
-        resizeMode="cover"
-        style={styles.rootScreen}
-        imageStyle={styles.rootBackgroundImage}
+    <>
+      <StatusBar style="light" />
+      <LinearGradient
+        colors={[Colors.primary300, Colors.primary500]}
+        style={styles.rootContainer}
       >
-        <SafeAreaProvider>
-          <SafeAreaView style={styles.rootScreen}>{renderPage()}</SafeAreaView>
-        </SafeAreaProvider>
-      </ImageBackground>
-    </LinearGradient>
+        <ImageBackground
+          source={require("./assets/images/background.png")}
+          resizeMode="cover"
+          style={styles.rootScreen}
+          imageStyle={styles.rootBackgroundImage}
+        >
+          <SafeAreaProvider>
+            <SafeAreaView style={styles.rootScreen}>
+              {renderPage()}
+            </SafeAreaView>
+          </SafeAreaProvider>
+        </ImageBackground>
+      </LinearGradient>
+    </>
   );
 };
 

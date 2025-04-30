@@ -1,6 +1,6 @@
 // default view and text component for the number
 
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
 import Colors from "../../constants/color";
 
 const NumberContainer = ({ children }: { children: React.ReactNode }) => {
@@ -11,21 +11,23 @@ const NumberContainer = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+const deviceWidth = Dimensions.get("window").width;
+
 const styles = StyleSheet.create({
   container: {
     borderWidth: 4,
     borderColor: Colors.primary500,
-    padding: 36,
+    padding: deviceWidth < 380 ? 12 : 24,
+    margin: deviceWidth < 380 ? 12 : 24,
     borderRadius: 8,
-    marginVertical: 24,
     alignItems: "center",
     justifyContent: "center",
-    width: "100%",
+    width: "70%",
     backgroundColor: Colors.primary300,
   },
   numberText: {
     color: Colors.secondary500,
-    fontSize: 36,
+    fontSize: deviceWidth < 380 ? 28 : 36,
     fontFamily: "open-sans-bold",
   },
 });

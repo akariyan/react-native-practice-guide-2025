@@ -1,7 +1,13 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  useWindowDimensions,
+  ScrollView,
+} from "react-native";
 import ConfirmButton from "../components/ui/ConfirmButton";
 import Title from "../components/ui/Title";
-import InstructionText from "../components/ui/InstructionText";
 import Colors from "../constants/color";
 
 const ResultGamePage = ({
@@ -13,28 +19,50 @@ const ResultGamePage = ({
   correctNumber: number;
   tryCount: number;
 }) => {
+  const { width, height } = useWindowDimensions();
+
+  let imageSize = 300;
+
+  if (width < 380) {
+    imageSize = 150;
+  }
+  if (height < 400) {
+    imageSize = 80;
+  }
+
+  const imageStyle = {
+    width: imageSize,
+    height: imageSize,
+    borderRadius: imageSize / 2,
+  };
+
   return (
-    <View style={styles.container}>
-      <Title>Game Result</Title>
-      <View style={styles.imageContainer}>
-        <Image
-          source={require("../assets/images/success.png")}
-          style={styles.image}
-        />
+    <ScrollView style={styles.screen}>
+      <View style={styles.container}>
+        <Title>Game Result</Title>
+        <View style={[styles.imageContainer, imageStyle]}>
+          <Image
+            source={require("../assets/images/success.png")}
+            style={styles.image}
+          />
+        </View>
+        <View style={styles.summaryContainer}>
+          <Text style={styles.summaryText}>
+            Your phone needed <Text style={styles.highlight}>{tryCount}</Text>{" "}
+            rounds to guess the number{" "}
+            <Text style={styles.highlight}>{correctNumber}</Text>.
+          </Text>
+        </View>
+        <ConfirmButton onPress={() => moveToNextPage()}>Restart!</ConfirmButton>
       </View>
-      <View style={styles.summaryContainer}>
-        <Text style={styles.summaryText}>
-          Your phone needed <Text style={styles.highlight}>{tryCount}</Text>{" "}
-          rounds to guess the number{" "}
-          <Text style={styles.highlight}>{correctNumber}</Text>.
-        </Text>
-      </View>
-      <ConfirmButton onPress={() => moveToNextPage()}>Restart!</ConfirmButton>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     justifyContent: "center",
@@ -42,9 +70,6 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   imageContainer: {
-    width: 300,
-    height: 300,
-    borderRadius: 150,
     borderWidth: 3,
     overflow: "hidden",
     margin: 36,

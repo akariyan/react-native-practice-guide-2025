@@ -1,4 +1,12 @@
-import { View, TextInput, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Alert,
+  useWindowDimensions,
+  KeyboardAvoidingView,
+  ScrollView,
+} from "react-native";
 import { useState } from "react";
 
 import ConfirmButton from "../components/ui/ConfirmButton";
@@ -13,6 +21,7 @@ const StartGamePage = ({
 }) => {
   const MAX_NUMBER = 99;
   const MIN_NUMBER = 1;
+  const { width, height } = useWindowDimensions();
 
   const [enteredNumber, setEnteredNumber] = useState("");
 
@@ -47,46 +56,69 @@ const StartGamePage = ({
     setEnteredNumber(() => "");
   };
 
+  const marginTopDistance = height < 380 ? 30 : 100;
+  const marginBottomDistance = height < 380 ? 20 : 50;
+
   return (
-    <Card>
-      <Title>Enter a Number</Title>
-      <TextInput
-        style={styles.numberInput}
-        maxLength={2}
-        keyboardType="number-pad"
-        autoCapitalize="none"
-        autoCorrect={false}
-        value={enteredNumber}
-        onChangeText={numberInputHandler}
-      />
-      <View style={styles.buttonContainer}>
-        <View style={styles.button}>
-          <ConfirmButton onPress={resetInputHandler}>RESET</ConfirmButton>
+    <ScrollView style={styles.screen}>
+      <KeyboardAvoidingView behavior="position" style={styles.screen}>
+        <View
+          style={[
+            styles.rootContainer,
+            {
+              marginTop: marginTopDistance,
+              marginBottom: marginBottomDistance,
+            },
+          ]}
+        >
+          <Title>Enter a Number</Title>
+          <Card>
+            <TextInput
+              style={styles.numberInput}
+              maxLength={2}
+              keyboardType="number-pad"
+              autoCapitalize="none"
+              autoCorrect={false}
+              value={enteredNumber}
+              onChangeText={numberInputHandler}
+            />
+            <View style={styles.buttonContainer}>
+              <View style={styles.button}>
+                <ConfirmButton onPress={resetInputHandler}>RESET</ConfirmButton>
+              </View>
+              <View style={styles.button}>
+                <ConfirmButton onPress={confirmInputHandler}>
+                  START
+                </ConfirmButton>
+              </View>
+            </View>
+          </Card>
         </View>
-        <View style={styles.button}>
-          <ConfirmButton onPress={confirmInputHandler}>START</ConfirmButton>
-        </View>
-      </View>
-    </Card>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+  },
+  rootContainer: {
+    flex: 1,
+    alignItems: "center",
+  },
   numberInput: {
     width: 50,
     fontSize: 32,
-    borderBottomColor: Colors.secondary300,
+    borderBottomColor: Colors.accent500,
     borderBottomWidth: 2,
-    color: Colors.secondary300,
+    color: Colors.accent500,
     marginVertical: 8,
-    paddingBottom: 4,
     fontWeight: "bold",
     textAlign: "center",
   },
   buttonContainer: {
     flexDirection: "row",
-    marginVertical: 16,
-    marginHorizontal: 8,
   },
   button: {
     flex: 1,
