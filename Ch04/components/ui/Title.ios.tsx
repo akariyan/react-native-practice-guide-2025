@@ -9,12 +9,14 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: "open-sans-bold",
     fontSize: 24,
-    color: Colors.secondary500,
+    color: Colors.white,
     textAlign: "center",
-    borderWidth: 2,
-    borderColor: Colors.secondary500,
-    backgroundColor: Colors.primary300,
+    borderWidth: 0,
+    borderColor: Colors.accent300,
+    backgroundColor: Colors.secondary500,
     padding: 12,
+    maxWidth: "80%",
+    width: 300,
   },
 });
 
